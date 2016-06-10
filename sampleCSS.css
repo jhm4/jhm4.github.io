@@ -51,7 +51,7 @@ input {
     -o-transition:      all .1s linear;
     -webkit-transition: all .1s linear;
     
-    width: 185px;
+    width:80%;
 }
 
 input:focus {
