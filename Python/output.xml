@@ -1,0 +1,53 @@
+input=V&Content-Length=25
+b'<LookupResultList>
+	<LookupResult>
+		<Symbol>V</Symbol>
+		<Name>Visa Inc</Name>
+		<Exchange>NYSE</Exchange>
+	</LookupResult>
+	<LookupResult>
+		<Symbol>V</Symbol>
+		<Name>Visa Inc</Name>
+		<Exchange>BATS Trading Inc</Exchange>
+	</LookupResult>
+	<LookupResult>
+		<Symbol>VIAV</Symbol>
+		<Name>Viavi Solutions Inc</Name>
+		<Exchange>NASDAQ</Exchange>
+	</LookupResult>
+	<LookupResult>
+		<Symbol>VAL</Symbol>
+		<Name>Valspar Corp</Name>
+		<Exchange>NYSE</Exchange>
+	</LookupResult>
+	<LookupResult>
+		<Symbol>VAR</Symbol>
+		<Name>Varian Medical Systems Inc</Name>
+		<Exchange>NYSE</Exchange>
+	</LookupResult>
+	<LookupResult>
+		<Symbol>VASC</Symbol>
+		<Name>Vascular Solutions Inc</Name>
+		<Exchange>NASDAQ</Exchange>
+	</LookupResult>
+	<LookupResult>
+		<Symbol>NYCB PR U</Symbol>
+		<Name>New York Community Capital Trust V</Name>
+		<Exchange>NYSE</Exchange>
+	</LookupResult>
+	<LookupResult>
+		<Symbol>AVG</Symbol>
+		<Name>AVG Technologies NV</Name>
+		<Exchange>NYSE</Exchange>
+	</LookupResult>
+	<LookupResult>
+		<Symbol>MSR</Symbol>
+		<Name>Mauser Group B.V.</Name>
+		<Exchange>NYSE</Exchange>
+	</LookupResult>
+	<LookupResult>
+		<Symbol>AER</Symbol>
+		<Name>AerCap Holdings NV</Name>
+		<Exchange>BATS Trading Inc</Exchange>
+	</LookupResult>
+</LookupResultList>'
