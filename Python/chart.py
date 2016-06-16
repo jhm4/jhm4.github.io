@@ -39,4 +39,4 @@ print(url_values)
 full_url = url + '?' + url_values
 data = urllib.request.urlopen(full_url)
 the_page = data.read()
-print(the_page) hello hello hello
+print(the_page)
