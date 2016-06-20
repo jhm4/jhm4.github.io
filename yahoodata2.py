@@ -52,7 +52,7 @@ def datamassage(t, list):
 	datalist = re.split('\class="yfnc_tabledata1"', t)
 	i = 1 
 	#The items 1 - len(var2) - 2 are the items of interest.
-	while i < len(datalist) - 2 : 
+	while i < len(datalist) - 1 : 
 		list.append(datalist[i])
 		i = i + 1
 
@@ -61,6 +61,7 @@ def datamassage(t, list):
 
 texts = []
 u = requests.get(base_url, params = specifications).text 
+
 data = []
 texts.append(datamassage(u, data))
 
