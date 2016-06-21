@@ -1,6 +1,7 @@
 import requests
 import re
 import time
+import sys
 from datetime import datetime
 
 def get_Price(var1):
@@ -11,6 +12,16 @@ def get_Price(var1):
     if not match2:
     	return "Error"
     return match.string[match.end():match2.start()]
+
+def get_Volume(var1):
+	match = re.search("<Volume>", var1)
+	if not match:
+	    return "Error"
+	match2 = re.search("</Volume>", var1)
+	if not match2:
+	    return "Error"
+	return match.string[match.end():match2.start()]
+
 
 def get_Time(var1):
     match = re.search("<Timestamp>", var1)
@@ -45,6 +56,16 @@ def process_Time(var1):
     to_Return = to_Return + " " + split[3]
     return to_Return
 
+def check_Time(times):
+    split = re.split(" ", times)
+    times = split[1]
+    split = re.split(":", times)
+    if split[0] == "15" and split[1] == "59" and split[2] == "59":
+        return 0
+    else: return 1
+
+
+
 tickers = {}
 tickers[0] = "AAPL"
 tickers[1] = "AXP"
@@ -78,19 +99,19 @@ tickers[28] = "WMT"
 tickers[29] = "XOM"
 
 
-total_data = {}
+#total_data = {}
 
-j = 0
-while j < 30:
-	pd_pairs = {}
-	prices = []
-	dates = []
-	pd_pairs = {'Prices' : prices, 'Dates' : dates}
-	total_data[tickers[j]] = pd_pairs
-	j += 1
+#j = 0
+#while j < 30:
+#	pd_pairs = {}
+#	prices = []
+#	dates = []
+#	pd_pairs = {'Prices' : prices, 'Dates' : dates}
+#	total_data[tickers[j]] = pd_pairs
+#	j += 1
 
 z = 0
-while True:
+while z < 2:
     i = 0
     while i < 30:
         url = 'http://dev.markitondemand.com/Api/v2/Quote/xml'
@@ -100,17 +121,36 @@ while True:
         r = requests.get(url, params = data)
         output = r.text
 
-        pairs = total_data[tickers[i]]
-        price = pairs['Prices']
-        times = pairs['Dates']
-        price.append(get_Price(output))
-        times.append(get_Time(output))
-        pairs['Prices'] = price
-        pairs['Dates'] = times
-        total_data[tickers[i]] = pairs
-        print(total_data[tickers[i]])
+       # pairs = total_data[tickers[i]]
+       # price = pairs['Prices']
+       # times = pairs['Dates']
+
+        times = get_Time(output)
+        check = check_Time(times)
+        if check == 0:
+            time.sleep(63000)
+            continue
+        print(times + ", ", end="")
+        sys.stdout.flush()
+
+        print(get_Price(output) + ", ", end="")
+        sys.stdout.flush()
+
+        print(get_Volume(output), end="")
+        sys.stdout.flush()
+
+        if not i == 29:
+            print(", ", end="")
+            sys.stdout.flush()
+       # price.append(get_Price(output))
+       # times.append(get_Time(output))
+       # pairs['Prices'] = price
+       # pairs['Dates'] = times
+       # total_data[tickers[i]] = pairs
+       # print(total_data[tickers[i]])
         i += 1
         time.sleep(30)
+    print()
     z += 1
 	
 
