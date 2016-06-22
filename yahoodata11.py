@@ -1,6 +1,7 @@
 import sqlite3
 import requests 
 import re 
+from time import strptime
 
 #this program takes in data from Yahoo Finance Canada website in html form and accomodates it into an SQLite table. 
 
@@ -43,6 +44,29 @@ specifications = {"s" : symb, "a" : start_datelist[0] , "b" : start_datelist[1],
 #grab the text online 
 t = requests.get(base_url, params = specifications).text 
 
+#function takes in a string date format and gets it into YYYY-MM-DD format, needed for SQLite table
+
+def dateformat(a): #!
+
+	def monthconvert(monthy): 
+		return(strptime(monthy, '%b').tm_mon)
+
+	b = re.split('\,', a)
+	year = b[1].replace(" ", "")
+	c = re.split('\s+', b[0])
+	day = c[1]
+
+	if (int(day) < 10): 
+		day = '0' + day
+
+	month = monthconvert(c[0])
+	if(int(month) < 10):
+		month = '0' + str(month)
+
+	datestring = str(year) +'-' + str(month) + '-' + str(day)
+
+	return(datestring) #!
+
 
 #create the SQLite taable I will be putting my data on. 
 
@@ -72,6 +96,10 @@ def cleardata(b, conn, c):
 
 	lastlist = re.split('\</td>', last)
 	data4[len(data4) - 1] = lastlist[0]
+
+	#format the date so that it date-time functions can be applied on SQLite table 
+
+	data4[0] = dateformat(data4[0]) #!
 	
 	#Insert row of data 
 	c.execute("INSERT INTO Stocks VALUES (?, ?, ?, ?, ?, ?, ?, NULL, NULL)", data4)
@@ -85,6 +113,7 @@ def stocksplit(b, conn, c):
 	#extract the date in data4o[0], and the ratio in data4o[1], ultimately. 
 	data4o = re.split('\</td><td class="yfnc_tabledata1" align="center" colspan="6">', b)
 	date = data4o[0]
+	date = dateformat(data4o[0]) #!
 	d = re.split('\ Stock Split', data4o[1])
 	ratio = d[0]
 	ratio = re.sub(r'\s+', '', ratio)
@@ -100,9 +129,9 @@ def dividend(b, conn, c):
 
 	#extract the date in data4p[0] and the dividend in data4p[1], ultimately 
 
-	date4p = []
 	data4p = re.split('\</td><td class="yfnc_tabledata1" align="center" colspan="6">', b)
 	date = data4p[0]
+	date = dateformat(data4p[0]) #!
 	dividendlist = re.split('\ Dividend', data4p[1])
 	dividend = dividendlist[0]
 
