@@ -49,22 +49,75 @@ specifications = {"s" : symb, "a" : start_datelist[0] , "b" : start_datelist[1],
 
 def datamassage(t, list): 
 	del list[:]   # make sure I have a clear list. 
+	string = ""
 	datalist = re.split('\class="yfnc_tabledata1"', t)
 	i = 1 
 	#The items 1 - len(var2) - 2 are the items of interest.
+
 	while i < len(datalist) - 1 : 
 		list.append(datalist[i])
+		string = string + datalist[i]
 		i = i + 1
 
-	return (list)
+	return string
 
 
 texts = []
 u = requests.get(base_url, params = specifications).text 
-file = open('lala10.txt', 'w')
-file.write(u)
-
 data = []
+
+###############################################################
+print()
+
+massaged = datamassage(u, data)
+
+while True:
+    split = re.split(" nowrap align=\"right\">", massaged, maxsplit=1)
+    if not len(split) == 2:
+        break
+    massaged = split[1]
+    search = re.search("</td><td", massaged)
+    print(search.string[:search.start()] + ", ", end="")
+
+    split = re.split("align=\"right\">", massaged, maxsplit=1)
+    massaged = split[1]
+    search = re.search("</td><td", massaged)
+    print(search.string[:search.start()] + ", ", end ="")
+
+    split = re.split("align=\"right\">", massaged, maxsplit=1)
+    massaged = split[1]
+    search = re.search("</td><td", massaged)
+    print(search.string[:search.start()] + ", ", end ="")
+
+    split = re.split("align=\"right\">", massaged, maxsplit=1)
+    massaged = split[1]
+    search = re.search("</td><td", massaged)
+    print(search.string[:search.start()] + ", ", end ="")
+
+    split = re.split("align=\"right\">", massaged, maxsplit=1)
+    massaged = split[1]
+    search = re.search("</td><td", massaged)
+    print(search.string[:search.start()] + ", ", end ="")
+
+    split = re.split("align=\"right\">", massaged, maxsplit=1)
+    massaged = split[1]
+    search = re.search("</td><td", massaged)
+    string = search.string[:search.start()]
+    string = re.sub(",", "", string)
+    print(string + ", ", end ="")
+
+    split = re.split("align=\"right\">", massaged, maxsplit=1)
+    massaged = split[1]
+    search = re.search("</td></tr", massaged)
+    print(search.string[:search.start()], end ="")
+    print()
+
+    #split = re.split("</td></tr><tr><td ", massaged, maxsplit=1)
+    #massaged = split[1]
+    
+
+
+###############################################################
 texts.append(datamassage(u, data))
 
 
@@ -89,11 +142,11 @@ while True:
 
 # I have all the data in my texts[] list. I just need to iterate through it and save it on the file. 
 
-file = open(filename, 'w')
+#file = open(filename, 'w')
 
-for text in texts: 
+#for text in texts: 
 
-	for listitem in text: 
-		file.write(listitem)
+#	for listitem in text: 
+#		file.write(listitem)
 
-file.close()
+#file.close()

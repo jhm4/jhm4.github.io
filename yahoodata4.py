@@ -61,8 +61,7 @@ def datamassage(t, list):
 
 texts = []
 u = requests.get(base_url, params = specifications).text 
-file = open('lala10.txt', 'w')
-file.write(u)
+print (u)
 
 data = []
 texts.append(datamassage(u, data))
