@@ -1,0 +1,9 @@
+import re
+
+a = "MY                                      
+                     mom"
+
+list = re.findall('\s', a)
+
+for each item in list: 
+	print (item)

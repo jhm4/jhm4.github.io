@@ -1,0 +1,6 @@
+import re
+
+text = "MynameisDiana"
+
+print(re.search('\Peeta', text))
+
