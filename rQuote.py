@@ -22,6 +22,14 @@ def get_Volume(var1):
 	    return "Error"
 	return match.string[match.end():match2.start()]
 
+def get_Cap(var1):
+	match = re.search("<MarketCap>", var1)
+	if not match:
+	    return "Error"
+	match2 = re.search("</MarketCap>", var1)
+	if not match2:
+	    return "Error"
+	return match.string[match.end():match2.start()]
 
 def get_Time(var1):
     match = re.search("<Timestamp>", var1)
@@ -67,34 +75,34 @@ def check_Time(times):
 
 
 tickers = {}
-tickers[0] = "AAPL"
-tickers[1] = "AXP"
-tickers[2] = "BA"
-tickers[3] = "CAT"
-tickers[4] = "CSCO"
-tickers[5] = "CVX"
-tickers[6] = "DD"
-tickers[7] = "DIS"
-tickers[8] = "GE"
-tickers[9] = "GS"
-tickers[10] = "HD"
-tickers[11] = "IBM"
-tickers[12] = "INTC"
-tickers[13] = "JNJ"
-tickers[14] = "JPM"
-tickers[15] = "KO"
-tickers[16] = "MCD"
-tickers[17] = "MMM"
-tickers[18] = "MRK"
-tickers[19] = "MSFT"
-tickers[20] = "NKE"
-tickers[21] = "PFE"
-tickers[22] = "PG"
-tickers[23] = "TRV"
-tickers[24] = "UNH"
-tickers[25] = "UTX"
-tickers[26] = "V"
-tickers[27] = "VZ"
+tickers[0] = "CHSP"
+tickers[1] = "DLX"
+tickers[2] = "GK"
+tickers[3] = "MDP"
+tickers[4] = "SALT"
+tickers[5] = "SB"
+tickers[6] = "SRPT"
+tickers[7] = "TK"
+tickers[8] = "UBSI"
+tickers[9] = "CJES"
+tickers[10] = "CIT"
+tickers[11] = "DPM"
+tickers[12] = "BKE"
+tickers[13] = "FITB"
+tickers[14] = "LNC"
+tickers[15] = "LUK"
+tickers[16] = "TRCO"
+tickers[17] = "UNM"
+tickers[18] = "PDLI"
+tickers[19] = "XL"
+tickers[20] = "CSCO"
+tickers[21] = "DIS"
+tickers[22] = "DVN"
+tickers[23] = "HD"
+tickers[24] = "JPM"
+tickers[25] = "PFE"
+tickers[26] = "S"
+tickers[27] = "V"
 tickers[28] = "WMT"
 tickers[29] = "XOM"
 
@@ -110,8 +118,8 @@ tickers[29] = "XOM"
 #	total_data[tickers[j]] = pd_pairs
 #	j += 1
 
-z = 0
-while z < 2:
+
+while True:
     i = 0
     while i < 30:
         url = 'http://dev.markitondemand.com/Api/v2/Quote/xml'
@@ -120,7 +128,7 @@ while z < 2:
         data['symbol'] = tickers[i]
         r = requests.get(url, params = data)
         output = r.text
-
+ 
        # pairs = total_data[tickers[i]]
        # price = pairs['Prices']
        # times = pairs['Dates']
@@ -136,6 +144,9 @@ while z < 2:
         print(get_Price(output) + ", ", end="")
         sys.stdout.flush()
 
+        print(get_Cap(output) + ", ", end="")
+        sys.stdout.flush()
+
         print(get_Volume(output), end="")
         sys.stdout.flush()
 
@@ -149,9 +160,8 @@ while z < 2:
        # total_data[tickers[i]] = pairs
        # print(total_data[tickers[i]])
         i += 1
-        time.sleep(30)
+        time.sleep(10)
     print()
-    z += 1
 	
 
 

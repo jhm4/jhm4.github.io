@@ -49,6 +49,7 @@ specifications = {"s" : symb, "a" : start_datelist[0] , "b" : start_datelist[1],
 
 def datamassage(t, list): 
 	del list[:]   # make sure I have a clear list. 
+<<<<<<< HEAD
 	string = ""
 	datalist = re.split('\class="yfnc_tabledata1"', t)
 	i = 1 
@@ -60,10 +61,21 @@ def datamassage(t, list):
 		i = i + 1
 
 	return string
+=======
+	datalist = re.split('\class="yfnc_tabledata1"', t)
+	i = 1 
+	#The items 1 - len(var2) - 2 are the items of interest.
+	while i < len(datalist) - 1 : 
+		list.append(datalist[i])
+		i = i + 1
+
+	return (list)
+>>>>>>> 5f572aa23abeb3e5162e369a76fd585e3b2f00f5
 
 
 texts = []
 u = requests.get(base_url, params = specifications).text 
+<<<<<<< HEAD
 data = []
 
 ###############################################################
@@ -74,6 +86,10 @@ print(re.sub(" nowrap align=\"right\">", "", massaged))
 
 
 ###############################################################
+=======
+
+data = []
+>>>>>>> 5f572aa23abeb3e5162e369a76fd585e3b2f00f5
 texts.append(datamassage(u, data))
 
 
@@ -105,4 +121,8 @@ for text in texts:
 	for listitem in text: 
 		file.write(listitem)
 
+<<<<<<< HEAD
 file.close()
+=======
+file.close()
+>>>>>>> 5f572aa23abeb3e5162e369a76fd585e3b2f00f5
