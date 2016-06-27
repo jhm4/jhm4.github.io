@@ -75,24 +75,20 @@ def check_Time(times):
 
 
 tickers = {}
-tickers[0] = "CHSP"
-tickers[1] = "DLX"
-tickers[2] = "GK"
-tickers[3] = "MDP"
-tickers[4] = "SALT"
-tickers[5] = "SB"
+
+tickers[5] = "CKEC" #**
 tickers[6] = "SRPT"
 tickers[7] = "TK"
-tickers[8] = "UBSI"
+tickers[8] = "HRG" #***
 tickers[9] = "CJES"
 tickers[10] = "CIT"
-tickers[11] = "DPM"
-tickers[12] = "BKE"
+tickers[11] = "TUP" #***
+tickers[12] = "BC" #***
 tickers[13] = "FITB"
 tickers[14] = "LNC"
 tickers[15] = "LUK"
 tickers[16] = "TRCO"
-tickers[17] = "UNM"
+tickers[17] = "DOX" #***
 tickers[18] = "PDLI"
 tickers[19] = "XL"
 tickers[20] = "CSCO"
@@ -120,8 +116,8 @@ tickers[29] = "XOM"
 
 
 while True:
-    i = 0
-    while i < 30:
+    i = 5
+    while i < 30: 
         url = 'http://dev.markitondemand.com/Api/v2/Quote/xml'
         data = {}
         data['Content-Length'] = 25
@@ -138,6 +134,7 @@ while True:
         if check == 0:
             time.sleep(63000)
             continue
+        print(tickers[i] + ", ", end="")
         print(times + ", ", end="")
         sys.stdout.flush()
 
@@ -160,7 +157,7 @@ while True:
        # total_data[tickers[i]] = pairs
        # print(total_data[tickers[i]])
         i += 1
-        time.sleep(10)
+        time.sleep(12)  ### change back to 10
     print()
 	
 

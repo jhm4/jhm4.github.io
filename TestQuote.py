@@ -3,7 +3,7 @@ import urllib.request
 import re
 import os
 
-os.environ["QUERY_STRING"] = "file:///C:/Users/John/jhm4.github.io/TestQuote.py?symbol=AAPL"
+os.environ["QUERY_STRING"] = "file:///C:/Users/John/jhm4.github.io/TestQuote.py?symbol=UNM"
 
 first = os.environ["QUERY_STRING"]
 
@@ -13,6 +13,8 @@ second_split = re.split('=', first_split[1])
 print(second_split)
 symbol = second_split[1]
 print(symbol)
+
+"key=value&key2=value2&key3=value3"
 
 url = 'http://dev.markitondemand.com/Api/v2/Quote/xml'
 data = {}

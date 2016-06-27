@@ -7,7 +7,6 @@ base_url = "https://ca.finance.yahoo.com/q/hp"
 
 #prompts the user for symbol, start date and end date. 
 
-<<<<<<< HEAD
 filename = input ()
 
 symb = input ()
@@ -16,16 +15,6 @@ symb = input ()
 start_date = input ()
 end_date = input ()
 interval_period = input ()
-=======
-filename = input ("File on which you want data saved (i.e output.txt) : ")
-
-symb = input ("Enter desired symbol (i.e MSFT) : ")
-
-#start and end dates as strings
-start_date = input ("Enter start-date (i.e 03-24-2004) : ")
-end_date = input ("Enter end-date (i.e 04-24-2004): ")
-interval_period = input ("Enter 'd' for daily data, 'w' for weekly, or 'm' for monthly: " )
->>>>>>> f70d70a6186e07a947d4ceaa91aebe3a0a4f432e
 
 #use RE to put start and end dates as lists 
 start_datelist = re.split('\-', start_date)
@@ -36,17 +25,10 @@ end_datelist = re.split('\-', end_date)
 #monthmodify() takes in an integer value indicating month number and returns a string suited to Yahoo. 
 
 def monthmodify (month): 
-<<<<<<< HEAD
     if month <= 10: 
         return("0" + str(month - 1))
     else:
         return(str(month - 1))
-=======
-	if month <= 10: 
-		return("0" + str(month - 1))
-	else:
-		return(str(month - 1))
->>>>>>> f70d70a6186e07a947d4ceaa91aebe3a0a4f432e
 
 
 startmonth = monthmodify(int(start_datelist[0]))
@@ -66,7 +48,6 @@ specifications = {"s" : symb, "a" : start_datelist[0] , "b" : start_datelist[1],
 # the data is saved in a list form (list)
 
 def datamassage(t, list): 
-<<<<<<< HEAD
     del list[:]   # make sure I have a clear list. 
     string = ""
     datalist = re.split('\class="yfnc_tabledata1"', t)
@@ -79,28 +60,40 @@ def datamassage(t, list):
         i = i + 1
 
     return string
-=======
-	del list[:]   # make sure I have a clear list. 
-	string = ""
-	datalist = re.split('\class="yfnc_tabledata1"', t)
-	i = 1 
-	#The items 1 - len(var2) - 2 are the items of interest.
 
-	while i < len(datalist) - 1 : 
-		list.append(datalist[i])
-		string = string + datalist[i]
-		i = i + 1
+def process_Time(var1):
+    to_Return = ""
+    months = {}
+    months["Jan"] = "01"
+    months["Feb"] = "02"
+    months["Mar"] = "03"
+    months["Apr"] = "04"
+    months["May"] = "05"
+    months["Jun"] = "06"
+    months["Jul"] = "07"
+    months["Aug"] = "08"
+    months["Sep"] = "09"
+    months["Oct"] = "10"
+    months["Nov"] = "11"
+    months["Dec"] = "12"
 
-	return string
->>>>>>> f70d70a6186e07a947d4ceaa91aebe3a0a4f432e
+    var1 = re.sub(",", "", var1)
+    split = re.split(" ", var1)
 
+    to_Return = to_Return + split[2] + "-"
+    to_Return = to_Return + months[split[0]] + "-"
+    if len(split[1]) < 2:
+        to_Return = to_Return + "0" + split[1]
+    else:
+        to_Return = to_Return + split[1]
+    return to_Return
 
 texts = []
 u = requests.get(base_url, params = specifications).text 
 data = []
 
 ###############################################################
-print()
+print("Date, Open, High, Low, Close, Volume, Adj Close, Dividend, Stock Split")
 
 massaged = datamassage(u, data)
 
@@ -110,13 +103,9 @@ while True:
         break
     massaged = split[1]
     search = re.search("</td><td", massaged)
-<<<<<<< HEAD
     substring = search.string[:search.start()]
-    substring2 = re.sub(",", "", substring)
+    substring2 = process_Time(substring)
     print(substring2 + ", ", end="")
-=======
-    print(search.string[:search.start()] + ", ", end="")
->>>>>>> f70d70a6186e07a947d4ceaa91aebe3a0a4f432e
 
     split = re.split("align=\"right\">", massaged, maxsplit=1)
     massaged = split[1]
@@ -149,7 +138,6 @@ while True:
     massaged = split[1]
     search = re.search("</td></tr", massaged)
     print(search.string[:search.start()], end ="")
-<<<<<<< HEAD
 
     
 #Check for a Dividend or Stock Split
@@ -164,10 +152,11 @@ while True:
         #Check if it's a Dividend
         searchDiv = re.search("Dividend", substring)
         if not searchDiv == None:
-            split = re.split("Dividend", substring)
+            split = re.split(" Dividend", substring)
             substring = split[0]
+            print(", " + substring + ", ", end="") # added
         else:
-            print(",", end="")
+            print(",, ", end="")
 
 
         #Check if it's a Stock Split
@@ -177,21 +166,13 @@ while True:
             substring = split[0]
             split2 = re.split(":\n            ", substring)
             substring = int(split2[0])/int(split2[1])
-        print(", " + str(substring), end = "")
-
-=======
->>>>>>> f70d70a6186e07a947d4ceaa91aebe3a0a4f432e
+            print(str(substring), end="")
+       # commented out print(", " + str(substring), end = "")
+    else:
+        print(",,", end="")
     print()
 
-    #split = re.split("</td></tr><tr><td ", massaged, maxsplit=1)
-    #massaged = split[1]
-    
-
-
-###############################################################
 texts.append(datamassage(u, data))
-
-
 
 #if page contains relevant information I want to append the text to my texts[]
 #and continue travelling to subsequent pages. If it doesn't, then stop. 
@@ -199,7 +180,6 @@ texts.append(datamassage(u, data))
 x = 66
 
 while True:
-<<<<<<< HEAD
     specificationsnext = {"s" : symb, "a" : start_datelist[0] , "b" : start_datelist[1], "c" : start_datelist[2], "d" : end_datelist[0], "e" : end_datelist[1] , "f" : end_datelist[2], "g" : interval_period, "z" : "66", "y"  : str(x)}
     r = requests.get(base_url, params = specificationsnext)
     s = r.text 
@@ -213,12 +193,8 @@ while True:
             massaged = split[1]
             search = re.search("</td><td", massaged)
             substring = search.string[:search.start()]
-            substring2 = re.sub(",", "", substring)
+            substring2 = process_Time(substring)
             print(substring2 + ", ", end="")
-
-           # massaged = split[1]
-           # search = re.search("</td><td", massaged)
-           # print(search.string[:search.start()] + ", ", end ="")
 
             split = re.split("align=\"right\">", massaged, maxsplit=1)
             massaged = split[1]
@@ -263,15 +239,15 @@ while True:
                 search1 = re.search("colspan=\"6\">", massaged)
                 search2 = re.search("</td></tr><tr><td", massaged)
                 substring = search1.string[search1.end():search2.start()]
-
-                #Check if it's a Dividend
+               
+                #Check if it's a Dividend   
                 searchDiv = re.search("Dividend", substring)
                 if not searchDiv == None:
-                    split = re.split("Dividend", substring)
+                    split = re.split(" Dividend", substring)
                     substring = split[0]
+                    print(", " + substring + ", ", end="") # added
                 else:
-                    print(",", end="")
-
+                    print(",, ", end="")
 
                 #Check if it's a Stock Split
                 searchSpl = re.search(" Stock Split", substring)
@@ -280,40 +256,13 @@ while True:
                     substring = split[0]
                     split2 = re.split(":\n            ", substring)
                     substring = int(split2[0])/int(split2[1])
-                print(", " + str(substring), end = "")
-
+                    print(str(substring), end="")
+            # commented out print(", " + str(substring), end = "")
+            else:
+                print(",,", end="")
             print()
 
         texts.append(datamassage(s, data2))
         x = x + 66
     else: 
         break
-=======
-	specificationsnext = {"s" : symb, "a" : start_datelist[0] , "b" : start_datelist[1], "c" : start_datelist[2], "d" : end_datelist[0], "e" : end_datelist[1] , "f" : end_datelist[2], "g" : interval_period, "z" : "66", "y"  : str(x)}
-	r = requests.get(base_url, params = specificationsnext)
-	s = r.text 
-
-	if re.search('\Historical quote data is unavailable for the specified date range.', s) == None : 
-		data2 = []
-		texts.append(datamassage(s, data2))
-		x = x + 66
-	else: 
-		break
->>>>>>> f70d70a6186e07a947d4ceaa91aebe3a0a4f432e
-
-
-# I have all the data in my texts[] list. I just need to iterate through it and save it on the file. 
-
-#file = open(filename, 'w')
-
-#for text in texts: 
-
-<<<<<<< HEAD
-#   for listitem in text: 
-#       file.write(listitem)
-=======
-#	for listitem in text: 
-#		file.write(listitem)
->>>>>>> f70d70a6186e07a947d4ceaa91aebe3a0a4f432e
-
-#file.close()
