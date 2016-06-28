@@ -26,7 +26,7 @@ lastInvest = lastDate-365-44
 #testdate = 850
 while z < lastInvest:
 	#Profit or Loss
-	if s[z-1]-s[z+44] > 0:
+	if s[z]-s[z+44] > 0:
 		P_L = 1
 	else:
 		P_L = 0
@@ -58,14 +58,14 @@ while z < lastInvest:
 	Volatility_44 = np.var(VTY_slice_44)
 	X.append(Volatility_44)
 
-	#Xnumpy = np.array(X)
+	Xnumpy = np.array(X)
 	
 	#Calculate Volume
 	X.append(s_Volume[z+44])
 
 	#Calculate 10-Day moving average
 	i = train_end + 44
-	while i <= train_end+94:
+	while i <= train_end+54:
 		slice_10 = pd.Series(s[i:(i+10)])
 		avg = np.mean(slice_10)
 		X.append(avg)
@@ -73,7 +73,7 @@ while z < lastInvest:
 	
 	#Calculate 50-Day Moving Average
 	m = train_end + 44
-	while m <= train_end+94:
+	while m <= train_end+54:
 		slice_50 = pd.Series(s[m:(m+50)])
 		avg = np.mean(slice_50)
 		X.append(avg)
@@ -94,57 +94,64 @@ clf.fit(SVM_data, SVM_target)
 joblib.dump(clf, 'SVM_Model2.pkl')
 
 
-#clf2 = joblib.load('SVM_Model2.pkl')
+clf2 = joblib.load('SVM_Model2.pkl')
 
-#f = open('SVM_predictions.txt', 'w')
+f = open('SVM_Predictions3.txt', 'w')
 
-#day = 100
-#while day < 200:
+percentage = 0
+day = 100
+while day < 200:
 
-#	X_p = []
+	X_p = []
 	
-#	PE_RAT_p = s[day]/(s[day]-s[day+365])
-#	X_p.append(PE_RAT_p)
+	PE_RAT_p = s[day]/(s[day]-s[day+365])
+	X_p.append(PE_RAT_p)
 
-#	Two_Day_p = s[day]-s[day+2]
-#	X_p.append(Two_Day_p)
+	Two_Day_p = s[day]-s[day+2]
+	X_p.append(Two_Day_p)
+
+	Forty_Day_p = s[day]-s[day+44]
+	X_p.append(Forty_Day_p)
 	
-#	Forty_Day_p = s[day]-s[day+44]
-#	X_p.append(Forty_Day_p)
+	VTY_slice_p = s[day:(day+10)]
+	VTY_slice_p = VTY_slice_p.as_matrix()
+	Volatility_p = np.var(VTY_slice_p)
+	X_p.append(Volatility_p)
+
+	VTY_slice_44_p = s[(day):(day+44)]
+	VTY_slice_44_p = VTY_slice_44_p.as_matrix()
+	Volatility_44_p = np.var(VTY_slice_44_p)
+	X_p.append(Volatility_44_p)
 	
-#	VTY_slice_p = s[day:(day+10)]
-#	VTY_slice_p = VTY_slice_p.as_matrix()
-#	Volatility_p = np.var(VTY_slice_p)
-#	X_p.append(Volatility_p)
-
-#	VTY_slice_44_p = s[(day):(day+44)]
-#	VTY_slice_44_p = VTY_slice_44_p.as_matrix()
-#	Volatility_44_p = np.var(VTY_slice_44_p)
-#	X_p.append(Volatility_44_p)
+	X_p.append(s_Volume[day])
 	
-#	X_p.append(s_Volume[day])
-	
-#	i = day
-#	while i <= day+50:
-#		slice_10_p = pd.Series(s[i:(i+10)])
-#		avg_p = np.mean(slice_10_p)
-#		X_p.append(avg_p)
-#		i += 1
-	
-#	i = day
-#	while i <= day+50:
-#		slice_50_p = pd.Series(s[i:(i+50)])
-#		avg_p = np.mean(slice_50_p)
-#		X_p.append(avg_p)
-#		i += 1
+	i = day
+	while i <= day+10:
+		slice_10_p = pd.Series(s[i:(i+10)])
+		avg_p = np.mean(slice_10_p)
+		X_p.append(avg_p)
+		i += 1
 
-#	SVM_predict = np.array(X_p)
+	i = day
+	while i <= day+10:
+		slice_50_p = pd.Series(s[i:(i+50)])
+		avg_p = np.mean(slice_50_p)
+		X_p.append(avg_p)
+		i += 1
 
-	#f.write("Current Day: ", s[day])
-	#f.write("Next Day: ", s[day-1])
+	SVM_predict = np.array(X_p)
+	#print(SVM_predict)
+	profitloss = s[day-1]-s[day]
+	prediction = clf2.predict(SVM_predict)
 
-#	f.write(str(clf2.predict(SVM_predict)))
-#	day += 1
+	if profitloss > 0 and prediction == 1:
+		percentage += 1
+	elif profitloss <=0 and prediction == 0:
+		percentage
 
+	f.write(str(prediction))
+	f.write('\n')
+	day += 1
 
+print(str(percentage/100))
 
