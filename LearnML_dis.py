@@ -4,11 +4,10 @@ import numpy as np
 import IPython
 from sklearn.externals import joblib
 import sklearn.metrics as stats
-from sklearn.metrics import classification_report
 import winsound
 
 
-df= pd.read_csv(r"C:\Users\John\jhm4.github.io\KO2.csv", parse_dates=['Date'], infer_datetime_format=True)
+df= pd.read_csv(r"C:\Users\John\jhm4.github.io\DIS2.csv", parse_dates=['Date'], infer_datetime_format=True)
 
 
 adjPrice = df[' Adj Close']
@@ -33,7 +32,7 @@ def update(new):
 	SVM_target2 = np.array(SVM_target)
 
 	clf.fit(SVM_data2, SVM_target2)
-	joblib.dump(clf, 'KO_Model.pkl')
+	joblib.dump(clf, 'DIS_Model.pkl')
 
 
 
@@ -58,23 +57,14 @@ while z < lastInvest:
 	#PE_RAT = s[z]/(s[z]-s[z+365])
 	#X.append(PE_RAT)
 
-	Two_Day = s[z+44]-s[z+2+44]
+	Two_Day = s[z]-s[z+2]
 	X.append(Two_Day)
 
-	One_Day = s[z+44]-s[z+1+44]
+	One_Day = s[z]-s[z+1]
 	X.append(One_Day)
 
-	Three_Day = s[z+44]-s[z+3+44]
+	Three_Day = s[z]-s[z+3]
 	X.append(Three_Day)
-
-	#Four_Day = s[z+44]-s[z+4+44]
-	#X.append(Four_Day)
-
-	#Five_Day = s[z+44]-s[z+5+44]
-	#X.append(Five_Day)
-
-	#Six_Day = s[z+44]-s[z+6+44]
-	#X.append(Six_Day)
 
 	#Calculate 44-day Net Price Change
 	#Forty_Day = s[z+44]-s[z+88]
@@ -82,7 +72,7 @@ while z < lastInvest:
 
 
 	#10-Day Volatility
-	VTY_slice = s[z+44:(z+10+44)]
+	VTY_slice = s[z:(z+10)]
 	VTY_slice = VTY_slice.as_matrix()
 	Volatility = np.var(VTY_slice)
 	X.append(Volatility)
@@ -96,18 +86,14 @@ while z < lastInvest:
 	#Xnumpy = np.array(X)
 	
 	#Calculate Volume
-	X.append(s_Volume[z+44])
+	X.append(s_Volume[z])
 
 
-	slice_5 = pd.Series(s[(z+44):(z+10+44)])
-	diff = np.ediff1d(slice_5)
-
-	for i in diff:
-		X.append(i)
-
-	#slice_10 = pd.Series(s[(z+6+44):(z+55+44)])
-	#X.append(np.mean(slice_10))
-
+	#10-Day Average
+	#i = train_end + 44
+	#slice_10 = pd.Series(s[i:i+10])
+	#avg_10 = np.mean(slice_10)
+	#X.append(avg_10)
 	#i = z
 	#while i <= z+5:
 	#	slice_10 = pd.Series(s[i:(i+10)])
@@ -132,12 +118,12 @@ SVM_target2 = np.array(SVM_target)
 #clf = svm.SVC(C=100)#gamma=0.001, C=100.)
 clf = svm.LinearSVC(C=100)
 clf.fit(SVM_data2, SVM_target2)
-joblib.dump(clf, 'KO_Model.pkl')
+joblib.dump(clf, 'DIS_Model.pkl')
 
 
 
 
-f = open('KO_Predictions1.txt', 'w')
+f = open('DIS_Predictions1.txt', 'w')
 
 #percentage = 0
 day = train_end-1
@@ -147,9 +133,9 @@ Earned = 0
 y_true = []
 y_pred = []
 print("First: " + str(s[day]))
-print("Last: " + str(s[50]))
-while day > 50:
-	clf2 = joblib.load('KO_Model.pkl')
+print("Last: " + str(s[0]))
+while day > 0:
+	clf2 = joblib.load('DIS_Model.pkl')
 	X_p = []
 	
 	#PE_RAT_p = s[day]/(s[day]-s[day+365])
@@ -164,19 +150,8 @@ while day > 50:
 	Three_Day = s[day]-s[day+3]
 	X_p.append(Three_Day)
 
-	#Four_Day = s[day]-s[day+4]
-	#X_p.append(Four_Day)
-
-	#Five_Day = s[day]-s[day+5]
-	#X_p.append(Five_Day)
-
-	#Six_Day = s[day]-s[day+6]
-	#X_p.append(Six_Day)
-
 	#Forty_Day_p = s[day]-s[day+44]
 	#X_p.append(Forty_Day_p)
-
-
 	
 	VTY_slice_p = s[day:(day+10)]
 	VTY_slice_p = VTY_slice_p.as_matrix()
@@ -190,15 +165,6 @@ while day > 50:
 	
 	X_p.append(s_Volume[day])
 	
-	slice_5 = pd.Series(s[day:(day+10)])
-	diff = np.ediff1d(slice_5.tolist())
-
-	for i in diff:
-		X_p.append(i)
-
-	#slice_10 = pd.Series(s[(day+6):(day+55)])
-	#X_p.append(np.mean(slice_10))
-
 
 	#i = day
 	#while i <= day+5:
@@ -215,7 +181,7 @@ while day > 50:
 	#	i += 1
 
 	SVM_predict = np.array(X_p)
-	profitloss = s[day-44]-s[day]
+	profitloss = s[day-1]-s[day]
 	length = SVM_predict.size
 	SVM_new = np.reshape(SVM_predict, (1, length))
 	prediction = clf2.predict(SVM_new)
@@ -245,11 +211,11 @@ while day > 50:
 
 	update(day)
 	
-	f.write(str(s[day-1]-s[day]))
+	f.write(str(profitloss))
 	f.write(str(prediction))
 	f.write('\n')
 	day -= 1
-print(classification_report(y_true, y_pred))
+
 print(stats.accuracy_score(y_true, y_pred))
 print(str(ActualEarned))
 print(str(Earned))

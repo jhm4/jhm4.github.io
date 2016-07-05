@@ -3,12 +3,10 @@ import pandas as pd
 import numpy as np
 import IPython
 from sklearn.externals import joblib
-import sklearn.metrics as stats
-from sklearn.metrics import classification_report
-import winsound
+import warnings
 
 
-df= pd.read_csv(r"C:\Users\John\jhm4.github.io\KO2.csv", parse_dates=['Date'], infer_datetime_format=True)
+df= pd.read_csv(r"C:\Users\John\jhm4.github.io\DIS2.csv", parse_dates=['Date'], infer_datetime_format=True)
 
 
 adjPrice = df[' Adj Close']
@@ -20,8 +18,8 @@ train_end = int(round(lastDate*.3))
 
 
 def update(new):
-	new = new
-	PorL = s[new-1]-s[new+44]
+	new = new+44
+	PorL = s[new-45]-s[new+44]
 
 	SVM_data.append(SVM_predict)
 	if profitloss > 0:
@@ -33,7 +31,7 @@ def update(new):
 	SVM_target2 = np.array(SVM_target)
 
 	clf.fit(SVM_data2, SVM_target2)
-	joblib.dump(clf, 'KO_Model.pkl')
+	joblib.dump(clf, 'SVM_Model2.pkl')
 
 
 
@@ -46,7 +44,7 @@ lastInvest = lastDate-365-44
 
 while z < lastInvest:
 	#Profit or Loss
-	if s[z-1]-s[z+44] > 0:
+	if s[z]-s[z+44] > 0:
 		P_L = 1
 	else:
 		P_L = 0
@@ -55,26 +53,14 @@ while z < lastInvest:
 	X = []
 
 	#Calculate PE Ratio
-	#PE_RAT = s[z]/(s[z]-s[z+365])
-	#X.append(PE_RAT)
+	PE_RAT = s[z+44]/(s[z+44]-s[z+44+365])
+	X.append(PE_RAT)
 
-	Two_Day = s[z+44]-s[z+2+44]
-	X.append(Two_Day)
-
-	One_Day = s[z+44]-s[z+1+44]
-	X.append(One_Day)
-
-	Three_Day = s[z+44]-s[z+3+44]
-	X.append(Three_Day)
-
-	#Four_Day = s[z+44]-s[z+4+44]
-	#X.append(Four_Day)
-
-	#Five_Day = s[z+44]-s[z+5+44]
-	#X.append(Five_Day)
-
-	#Six_Day = s[z+44]-s[z+6+44]
-	#X.append(Six_Day)
+	inc = 1
+	while inc < 8:
+		One_Day = s[z+44]-s[z+44+inc]
+		X.append(One_Day)
+		inc += 1
 
 	#Calculate 44-day Net Price Change
 	#Forty_Day = s[z+44]-s[z+88]
@@ -82,7 +68,7 @@ while z < lastInvest:
 
 
 	#10-Day Volatility
-	VTY_slice = s[z+44:(z+10+44)]
+	VTY_slice = s[z+44:(z+54)]
 	VTY_slice = VTY_slice.as_matrix()
 	Volatility = np.var(VTY_slice)
 	X.append(Volatility)
@@ -98,26 +84,27 @@ while z < lastInvest:
 	#Calculate Volume
 	X.append(s_Volume[z+44])
 
+	#Calculate 4-Day average
+	#i = train_end + 44
+	#slice_4 = pd.Series(s[i:i+4])
+	#avg_4 = np.mean(slice_4)
+	#X.append(avg_4)
 
-	slice_5 = pd.Series(s[(z+44):(z+10+44)])
-	diff = np.ediff1d(slice_5)
+	#10-Day Average
+	#i = train_end + 44
+	#slice_10 = pd.Series(s[i:i+10])
+	#avg_10 = np.mean(slice_10)
+	#X.append(avg_10)
 
-	for i in diff:
-		X.append(i)
-
-	#slice_10 = pd.Series(s[(z+6+44):(z+55+44)])
-	#X.append(np.mean(slice_10))
-
-	#i = z
-	#while i <= z+5:
+	#while i <= train_end+:
 	#	slice_10 = pd.Series(s[i:(i+10)])
 	#	avg = np.mean(slice_10)
 	#	X.append(avg)
 	#	i += 1
 	
 	#Calculate 50-Day Moving Average
-	#m = z
-	#while m <= z+5:
+	#m = train_end + 44
+	#while m <= train_end+49:
 	#	slice_50 = pd.Series(s[m:(m+50)])
 	#	avg = np.mean(slice_50)
 	#	X.append(avg)
@@ -129,54 +116,47 @@ while z < lastInvest:
 	z += 1
 SVM_data2 = np.array(SVM_data)
 SVM_target2 = np.array(SVM_target)
-#clf = svm.SVC(C=100)#gamma=0.001, C=100.)
-clf = svm.LinearSVC(C=100)
+print("Size" + str(SVM_data2.size))
+clf = svm.SVC(gamma=0.001, C=100.)
 clf.fit(SVM_data2, SVM_target2)
-joblib.dump(clf, 'KO_Model.pkl')
+joblib.dump(clf, 'SVM_Model2.pkl')
 
 
 
 
-f = open('KO_Predictions1.txt', 'w')
+f = open('SVM_Predictions3.txt', 'w')
 
-#percentage = 0
-day = train_end-1
+percentage = 0
+day = train_end+43
 own = False
 ActualEarned = 0
 Earned = 0
-y_true = []
-y_pred = []
 print("First: " + str(s[day]))
-print("Last: " + str(s[50]))
-while day > 50:
-	clf2 = joblib.load('KO_Model.pkl')
+print("Last: " + str(s[600]))
+print("Day: " + str(day))
+while day > 600:
+	clf2 = joblib.load('SVM_Model2.pkl')
 	X_p = []
 	
-	#PE_RAT_p = s[day]/(s[day]-s[day+365])
-	#X_p.append(PE_RAT_p)
-	
-	Two_Day_p = s[day]-s[day+2]
-	X_p.append(Two_Day_p)
+	PE_RAT_p = s[day]/(s[day]-s[day+365])
+	X_p.append(PE_RAT_p)
+	inc = 1
+	while inc < 8:
+		One_Day_p = s[day]-s[day+inc]
+		X_p.append(One_Day_p)
+		inc += 1
+	#Calculate 2-Day
+	#Two_Day_p = s[day+2]-s[day+2]
+	#X_p.append(Two_Day_p)
 
-	One_Day_p = s[day]-s[day+1]
-	X_p.append(One_Day_p)
+	#Three_Day_p = s[day]-s[day+3]
+	#X_p.append(Three_Day_p)
 
-	Three_Day = s[day]-s[day+3]
-	X_p.append(Three_Day)
-
-	#Four_Day = s[day]-s[day+4]
-	#X_p.append(Four_Day)
-
-	#Five_Day = s[day]-s[day+5]
-	#X_p.append(Five_Day)
-
-	#Six_Day = s[day]-s[day+6]
-	#X_p.append(Six_Day)
+	#Four_Day_p = s[day]-s[day+4]
+	#X_p.append(Four_Day_p)
 
 	#Forty_Day_p = s[day]-s[day+44]
 	#X_p.append(Forty_Day_p)
-
-
 	
 	VTY_slice_p = s[day:(day+10)]
 	VTY_slice_p = VTY_slice_p.as_matrix()
@@ -190,14 +170,7 @@ while day > 50:
 	
 	X_p.append(s_Volume[day])
 	
-	slice_5 = pd.Series(s[day:(day+10)])
-	diff = np.ediff1d(slice_5.tolist())
 
-	for i in diff:
-		X_p.append(i)
-
-	#slice_10 = pd.Series(s[(day+6):(day+55)])
-	#X_p.append(np.mean(slice_10))
 
 
 	#i = day
@@ -215,22 +188,10 @@ while day > 50:
 	#	i += 1
 
 	SVM_predict = np.array(X_p)
-	profitloss = s[day-44]-s[day]
+	profitloss = s[day-1]-s[day]
 	length = SVM_predict.size
 	SVM_new = np.reshape(SVM_predict, (1, length))
 	prediction = clf2.predict(SVM_new)
-
-	if prediction == 1:
-		y_pred.append(1)
-	else:
-		y_pred.append(0)
-
-	if profitloss > 0:
-		y_true.append(1)
-	else:
-		y_true.append(0)
-
-
 
 	ActualEarned = ActualEarned + s[day-1]-s[day]
 
@@ -243,16 +204,19 @@ while day > 50:
 			own = False
 
 
-	update(day)
+	#update(day)
+
+	if profitloss > 0 and prediction == 1:
+		percentage += 1
+	elif profitloss <=0 and prediction == 0:
+		percentage += 1
 	
-	f.write(str(s[day-1]-s[day]))
+	f.write(str(profitloss))
 	f.write(str(prediction))
 	f.write('\n')
 	day -= 1
-print(classification_report(y_true, y_pred))
-print(stats.accuracy_score(y_true, y_pred))
+
 print(str(ActualEarned))
 print(str(Earned))
-winsound.Beep(300, 500)
-#print(str(percentage/754))
+print(str(percentage/198))
 
