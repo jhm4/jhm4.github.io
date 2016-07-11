@@ -37,13 +37,12 @@ def update(new):
 
 
 
-#One whole Investment
 SVM_data = []
 SVM_target = []
 z = train_end
 lastInvest = lastDate-365-44
 
-
+#Each loop creates one sample investment
 while z < lastInvest:
 	#Profit or Loss
 	if s[z-1]-s[z+44] > 0:
@@ -137,17 +136,17 @@ joblib.dump(clf, 'AAPL_Model.pkl')
 
 
 
-f = open('AAPL_Predictions4.txt', 'w')
+f = open('AAPL_Predictions1.txt', 'w')
 
-#percentage = 0
 day = train_end-1
-own = False
 ActualEarned = 0
 Earned = 0
 y_true = []
 y_pred = []
+
 print("First: " + str(s[day]))
 print("Last: " + str(s[50]))
+
 while day > 50:
 	clf2 = joblib.load('AAPL_Model.pkl')
 	X_p = []
@@ -236,12 +235,6 @@ while day > 50:
 
 	if prediction == 1:
 		Earned = Earned + s[day-1]-s[day]
-		if own == False:
-			own = True
-	if prediction == 0:
-		if own == True:
-			own = False
-
 
 	update(day)
 	
@@ -249,10 +242,10 @@ while day > 50:
 	f.write(str(prediction))
 	f.write('\n')
 	day -= 1
+
 print(classification_report(y_true, y_pred))
 print(stats.accuracy_score(y_true, y_pred))
 print(str(ActualEarned))
 print(str(Earned))
-winsound.Beep(300, 500)
-#print(str(percentage/754))
+
 

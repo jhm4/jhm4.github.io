@@ -1,0 +1,22 @@
+{
+    "contents" : "",
+    "created" : 1422301446925.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "A4B8841F",
+    "lastKnownWriteTime" : 31244048835477601,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "caption" : "mtcars",
+        "contentUrl" : "content?title=mtcars&file=838ccd504c434e7fb1e9f16a8b15c50a.htm",
+        "displayedObservations" : 32,
+        "displayedVariables" : 12,
+        "totalObservations" : 32,
+        "variables" : 11
+    },
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}
