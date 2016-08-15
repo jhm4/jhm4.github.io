@@ -15,6 +15,7 @@ dfP = pd.read_pickle('MMM_dfP.pkl')
 
 dfP = dfP[::-1]
 
+DATE = dfP['Date']
 BRO = df['BETA_RAW_OVERRIDABLE']
 AO = df['ALPHA_OVERRIDABLE']
 ABPM = df['ALPHA_FOR_BETA_PM']
@@ -118,6 +119,8 @@ j = BRO_TE.first_valid_index()
 SVM_test = []
 y_pred = []
 i = 453
+print(DATE[i])
+print(DATE[0])
 while j < BRO_TE.last_valid_index():
 	clf = joblib.load('MMM_Model.pkl')
 	Xp = []

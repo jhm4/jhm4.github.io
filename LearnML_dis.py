@@ -41,7 +41,7 @@ SVM_data = []
 SVM_target = []
 z = train_end
 lastInvest = lastDate-365-44
-
+print(str(train_end))
 
 while z < lastInvest:
 	#Profit or Loss
@@ -219,6 +219,4 @@ while day > 0:
 print(stats.accuracy_score(y_true, y_pred))
 print(str(ActualEarned))
 print(str(Earned))
-winsound.Beep(300, 500)
-#print(str(percentage/754))
 

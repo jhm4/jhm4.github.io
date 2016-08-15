@@ -8,8 +8,9 @@ from sklearn.metrics import classification_report
 import winsound
 
 
-df= pd.read_csv(r"C:\Users\John\jhm4.github.io\AAPL2.csv", parse_dates=['Date'], infer_datetime_format=True)
-
+df= pd.read_csv(r"C:\Users\John\jhm4.github.io\TSLA2.csv", parse_dates=['Date'], infer_datetime_format=True)
+df.to_pickle('TSLA_df.pkl')
+df = pd.read_pickle('TSLA_df.pkl')
 
 adjPrice = df[' Adj Close']
 Volume = df[' Volume']
@@ -33,7 +34,7 @@ def update(new):
 	SVM_target2 = np.array(SVM_target)
 
 	clf.fit(SVM_data2, SVM_target2)
-	joblib.dump(clf, 'AAPL_Model.pkl')
+	joblib.dump(clf, 'TSLA_Model4.pkl')
 
 
 
@@ -104,8 +105,8 @@ while z < lastInvest:
 	for i in diff:
 		X.append(i)
 
-	#slice_10 = pd.Series(s[(z+6+44):(z+55+44)])
-	#X.append(np.mean(slice_10))
+	slice_10 = pd.Series(s[(z+6+44):(z+55+44)])
+	X.append(np.mean(slice_10))
 
 	#i = z
 	#while i <= z+5:
@@ -131,24 +132,24 @@ SVM_target2 = np.array(SVM_target)
 #clf = svm.SVC(C=100)#gamma=0.001, C=100.)
 clf = svm.LinearSVC(C=100)
 clf.fit(SVM_data2, SVM_target2)
-joblib.dump(clf, 'AAPL_Model.pkl')
+joblib.dump(clf, 'TSLA_Model4.pkl')
 
 
 
 
-f = open('AAPL_Predictions1.txt', 'w')
+#f = open('TSLA_Predictions1.txt', 'w')
 
 day = train_end-1
 ActualEarned = 0
 Earned = 0
 y_true = []
 y_pred = []
-
+First = s[day]
 print("First: " + str(s[day]))
 print("Last: " + str(s[50]))
 
 while day > 50:
-	clf2 = joblib.load('AAPL_Model.pkl')
+	clf2 = joblib.load('TSLA_Model4.pkl')
 	X_p = []
 	
 	#PE_RAT_p = s[day]/(s[day]-s[day+365])
@@ -195,8 +196,8 @@ while day > 50:
 	for i in diff:
 		X_p.append(i)
 
-	#slice_10 = pd.Series(s[(day+6):(day+55)])
-	#X_p.append(np.mean(slice_10))
+	slice_10 = pd.Series(s[(day+6):(day+55)])
+	X_p.append(np.mean(slice_10))
 
 
 	#i = day
@@ -235,16 +236,16 @@ while day > 50:
 
 	if prediction == 1:
 		Earned = Earned + s[day-1]-s[day]
-
+	if Earned < (First*(-1.0))/2.0:
+		break
 	update(day)
 	
-	f.write(str(s[day-1]-s[day]))
-	f.write(str(prediction))
-	f.write('\n')
+	#f.write(str(s[day-1]-s[day]))
+	#f.write(str(prediction))
+	#f.write('\n')
 	day -= 1
 
-print(classification_report(y_true, y_pred))
-print(stats.accuracy_score(y_true, y_pred))
+#print(stats.accuracy_score(y_true, y_pred))
 print(str(ActualEarned))
 print(str(Earned))
 

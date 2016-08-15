@@ -7,7 +7,6 @@ base_url = "https://ca.finance.yahoo.com/q/hp"
 
 #prompts the user for symbol, start date and end date. 
 
-filename = input ()
 
 symb = input ()
 

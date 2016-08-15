@@ -139,6 +139,8 @@ j = BRO_TE.first_valid_index()+44
 SVM_test = []
 y_pred = []
 i = 453
+print(str(j))
+print(str(BRO_TE.last_valid_index()))
 while j < BRO_TE.last_valid_index():
 	clf = joblib.load('MMM_Model.pkl')
 	Xp = []
@@ -148,7 +150,7 @@ while j < BRO_TE.last_valid_index():
 	#Xp.append(VOL_TE[j-44])
 	#Xp.append(EBITDA_TE[j-44])
 	#Xp.append(EPS_TE[j-44])
-	#Xp.append(EVAL_TE[j-44])
+	#Xp.nappend(EVAL_TE[j-44])
 	Xp.append(CHG_TE[j-44])
 	Xp.append(QR_TE[j-44])
 	Xp.append(RISK_TE[j-44])
